@@ -1,0 +1,76 @@
+<launch>
+
+  <!--
+    ECEN 433 - Lab 2 launch file.
+
+    Launch files start roscore (if it isn't already running) plus any number
+    of nodes, all with one command:
+
+        roslaunch turtle_control turtle_control.launch
+
+    Every <node> tag needs three things:
+      pkg   the ROS package the node lives in
+      type  the executable file name - for Python nodes this INCLUDES the .py
+      name  what the node will be called
+  -->
+
+  <arg name="robot" default="false"/>
+
+  <!--
+    What we are driving. This one string gets used twice below: as the
+    namespace, and as the name of the param file. That is the Duckietown
+    convention - a robot's config file is named after the robot, so
+    config/turtlesim.yaml for the turtle and config/<robot name>.yaml for yours.
+  -->
+  <arg name="ns" value="$(optenv VEHICLE_NAME duckiebot)" if="$(arg robot)"/>
+  <arg name="ns" value="turtlesim" unless="$(arg robot)"/>
+
+  <!--
+    Namespace: everything launched inside this group gets /<ns>/ prefixed onto
+    its relative names (topics, node names, etc).
+  -->
+  <group ns="$(arg ns)">
+
+    <!-- The turtle simulator launches as its own node. -->
+    <node pkg="turtlesim" type="turtlesim_node" name="sim" output="screen" />
+
+    <!--
+      Provided example for Part V. turtle_bridge does not
+      hard-code its topic names - it reads them from config/turtle_bridge.yaml,
+      loaded by the <rosparam> tag below.
+    -->
+    <node pkg="turtle_control" type="turtle_bridge.py" name="turtle_bridge"
+          output="screen">
+      <rosparam file="$(find turtle_control)/config/turtle_bridge.yaml"
+                subst_value="true" />
+    </node>
+
+    <!-- TODO (Part II): launch your square_node here.
+
+         It lives in the turtle_control package, and the executable is
+         square_node.py - don't forget the .py, or roslaunch will not find it.
+
+         <node pkg="PACKAGE_NAME" type="FILENAME.py" name="..." output="screen" />
+    -->
+
+    <!-- TODO (Part III): launch your direction_node here, the same way. -->
+
+    <!-- TODO (Part V):
+
+        Do to your square_node what has already been done to turtle_bridge
+        above: load a param file INSIDE its <node> tag
+
+          <node pkg="PACKAGE_NAME" type="FILENAME.py" name="..." output="screen" >
+            <rosparam file="$(find turtle_control)/config/$(arg ns).yaml"
+                      subst_value="true" />
+          </node>
+
+        The difference from the bridge: the filename is $(arg ns), not a fixed
+        name. Flip robot:=true and the same tag loads a different file, for a
+        different robot, with no edit to this file or to your node.
+
+    -->
+
+  </group>
+
+</launch>

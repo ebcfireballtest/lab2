@@ -1,0 +1,19 @@
+# ECEN 433 - Lab 2
+#
+# PROVIDED. This is turtle_bridge's param file, and it is here for you to read.
+#
+# A ROS param file is a YAML file holding everything a node needs to be told at
+# startup. The launch file loads it into the node, and the node reads the
+# values back with rospy.get_param. Nothing is hard-coded in the Python.
+#
+# This one is the bridge's whole job description, in two lines:
+#
+#   input_topic    where the bridge LISTENS, for duckietown_msgs/Twist2DStamped
+#   output_topic   where the bridge TALKS, in geometry_msgs/Twist
+#
+# So `input_topic` is the topic YOUR square_node has to publish on. If your
+# turtle is not moving, this file is where you check that you got the name
+# right.
+
+input_topic: "turtle1/cmd"
+output_topic: "turtle1/cmd_vel"
